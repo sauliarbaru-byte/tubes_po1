@@ -23,19 +23,19 @@ public class LoginController {
     }
 
     private void login() {
-        // Ambil input dari LoginView dan hapus spasi di awal/akhir
+        
         String username = view.getUsername().trim();
         String password = view.getPassword().trim();
     
-        // Debug log sementara
+        
         System.out.println("Username yang dikirim ke query: '" + username + "'");
         System.out.println("Password yang dikirim ke query: '" + password + "'");
     
-        // Panggil repository untuk cek login
+        
         User user = userRepository.login(username, password);
     
         if (user != null) {
-            // Login berhasil → buka dashboard
+            
             DashboardView dashboard = new DashboardView(user);
             dashboard.setVisible(true);
     
