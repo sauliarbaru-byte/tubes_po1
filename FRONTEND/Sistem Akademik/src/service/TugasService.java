@@ -1,17 +1,17 @@
 package service;
 
-import dao.TugasDAO;
 import model.Tugas;
+import repository.TugasRepository;
 
 public class TugasService {
 
-    private TugasDAO tugasDAO;
+    private TugasRepository tugasRepository;
 
     public TugasService() {
-        tugasDAO = new TugasDAO();
+        tugasRepository = new TugasRepository();
     }
 
     public void tambahTugas(Tugas tugas) {
-        tugasDAO.tambahTugas(tugas);
+        tugasRepository.tambahTugas(tugas);
     }
 }

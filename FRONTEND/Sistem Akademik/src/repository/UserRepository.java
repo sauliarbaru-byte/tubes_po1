@@ -1,7 +1,7 @@
 package repository;
 
 import model.User;
-import util.DatabaseConnection;
+import util.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ public class UserRepository {
     // Login menggunakan username dan password
     public User login(String username, String password) {
         try {
-            Connection conn = DatabaseConnection.getConnection();
+            Connection conn = DBConnection.getConnection();
             String sql = "SELECT * FROM user WHERE username=? AND password=?";
             PreparedStatement ps = conn.prepareStatement(sql);
     
