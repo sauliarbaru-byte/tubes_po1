@@ -39,7 +39,7 @@ public class LoginController {
             DashboardView dashboard = new DashboardView(user);
             dashboard.setVisible(true);
     
-            // Tutup login
+            
             view.dispose();
         } else {
             JOptionPane.showMessageDialog(view, "Username atau password salah!");
