@@ -2,6 +2,7 @@ package controller;
 
 import model.Tugas;
 import service.TugasService;
+import util.Session;
 import view.DashboardView;
 import view.TambahTugasView;
 
@@ -17,7 +18,7 @@ public class DashboardController {
         this.view = view;
         this.tugasService = new TugasService();
 
-        loadSemuaTugas();
+        loadSemuaTugasUserLogin();
 
         view.getBtnTambahTugas().addActionListener(e ->
                 new TambahTugasView(view).setVisible(true)
@@ -36,45 +37,16 @@ public class DashboardController {
             );
 
             if (pilihan != null) {
-                List<Tugas> hasil = tugasService.getByPriority(pilihan);
-                view.tampilkanTugas(hasil);
-            }
-        });
-
-        view.getBtnDeadline().addActionListener(e -> {
-            String[] options = {"HARI_INI", "BESOK", "TANPA_DEADLINE"};
-            String pilihan = (String) JOptionPane.showInputDialog(
-                    view,
-                    "Pilih Deadline",
-                    "Filter Deadline",
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    options,
-                    options[0]
-            );
-
-            if (pilihan != null) {
-                List<Tugas> hasil;
-
-                switch (pilihan) {
-                    case "HARI_INI":
-                        hasil = tugasService.getDeadlineHariIni();
-                        break;
-                    case "BESOK":
-                        hasil = tugasService.getDeadlineBesok();
-                        break;
-                    default:
-                        hasil = tugasService.getTanpaDeadline();
-                        break;
-                }
-
-                view.tampilkanTugas(hasil);
+                view.tampilkanTugas(
+                        tugasService.getByPriorityUser(Session.getUserId(), pilihan)
+                );
             }
         });
     }
 
-    private void loadSemuaTugas() {
-        List<Tugas> list = tugasService.getAllTugas();
+    private void loadSemuaTugasUserLogin() {
+        int userId = Session.getUserId();
+        List<Tugas> list = tugasService.getAllByUser(userId);
         view.tampilkanTugas(list);
     }
 }

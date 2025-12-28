@@ -34,12 +34,7 @@ public class TugasService {
         return repository.findTanpaDeadline();
     }
 
-    public List<Tugas> getAllTugasByNim(String nim) {
-    return repository.findByNim(nim);
-    }
-
-
-    public void updateStatusSelesai(int idTugas) {
+    public void tandaiSelesai(int idTugas) {
         repository.updateStatusSelesai(idTugas);
     }
 }

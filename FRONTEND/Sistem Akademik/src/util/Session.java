@@ -4,12 +4,10 @@ public class Session {
 
     private static int userId;
     private static String username;
-    private static String role;
 
-    public static void setUser(int id, String uname, String r) {
-        userId = id;
-        username = uname;
-        role = r;
+    public static void setUser(int id, String username) {
+        Session.userId = id;
+        Session.username = username;
     }
 
     public static int getUserId() {
@@ -20,13 +18,12 @@ public class Session {
         return username;
     }
 
-    public static String getRole() {
-        return role;
+    public static boolean isLogin() {
+        return username != null;
     }
 
     public static void clear() {
         userId = 0;
         username = null;
-        role = null;
     }
 }
