@@ -10,6 +10,12 @@ import javax.swing.*;
 
 public class LoginController {
 
+    Session.setUser(
+    user.getId(),
+    user.getUsername(),
+    user.getRole()
+);
+
     private LoginView view;
     private UserRepository userRepository;
 
@@ -31,13 +37,6 @@ public class LoginController {
         User user = userRepository.login(username, password);
 
         if (user != null) {
-
-            // SIMPAN SESSION
-            Session.setUser(
-                    user.getNim(),
-                    user.getUsername(),
-                    user.getEmail()
-            );
 
             DashboardView dashboard = new DashboardView(user);
             dashboard.setVisible(true);

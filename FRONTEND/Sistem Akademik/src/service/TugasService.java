@@ -12,6 +12,7 @@ public class TugasService {
     public void tambahTugas(Tugas tugas) {
         repository.insert(tugas);
     }
+    
 
     public List<Tugas> getAllTugas() {
         return repository.getAllTugas();
@@ -33,7 +34,12 @@ public class TugasService {
         return repository.findTanpaDeadline();
     }
 
-    public void tandaiSelesai(int idTugas) {
+    public List<Tugas> getAllTugasByNim(String nim) {
+    return repository.findByNim(nim);
+    }
+
+
+    public void updateStatusSelesai(int idTugas) {
         repository.updateStatusSelesai(idTugas);
     }
 }

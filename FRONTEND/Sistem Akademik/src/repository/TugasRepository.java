@@ -32,6 +32,21 @@ public class TugasRepository {
         }
     }
 
+    public void updateStatusSelesai(int idTugas) {
+    String sql = "UPDATE tugas SET status='SELESAI' WHERE id_tugas=?";
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setInt(1, idTugas);
+        ps.executeUpdate();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+
     public List<Tugas> getAllTugas() {
         return findByQuery("SELECT * FROM tugas");
     }
