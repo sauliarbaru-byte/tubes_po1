@@ -18,7 +18,13 @@ public class DashboardController {
         this.view = view;
         this.tugasService = new TugasService();
 
-        loadSemuaTugasUserLogin();
+       
+        if (!Session.isLogin()) {
+            JOptionPane.showMessageDialog(view, "Silakan login terlebih dahulu");
+            System.exit(0);
+        }
+
+        loadSemuaTugas();
 
         view.getBtnTambahTugas().addActionListener(e ->
                 new TambahTugasView(view).setVisible(true)
@@ -37,16 +43,45 @@ public class DashboardController {
             );
 
             if (pilihan != null) {
-                view.tampilkanTugas(
-                        tugasService.getByPriorityUser(Session.getUserId(), pilihan)
-                );
+                List<Tugas> hasil = tugasService.getByPriority(pilihan);
+                view.tampilkanTugas(hasil);
+            }
+        });
+
+        view.getBtnDeadline().addActionListener(e -> {
+            String[] options = {"HARI_INI", "BESOK", "TANPA_DEADLINE"};
+            String pilihan = (String) JOptionPane.showInputDialog(
+                    view,
+                    "Pilih Deadline",
+                    "Filter Deadline",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[0]
+            );
+
+            if (pilihan != null) {
+                List<Tugas> hasil;
+
+                switch (pilihan) {
+                    case "HARI_INI":
+                        hasil = tugasService.getDeadlineHariIni();
+                        break;
+                    case "BESOK":
+                        hasil = tugasService.getDeadlineBesok();
+                        break;
+                    default:
+                        hasil = tugasService.getTanpaDeadline();
+                        break;
+                }
+
+                view.tampilkanTugas(hasil);
             }
         });
     }
 
-    private void loadSemuaTugasUserLogin() {
-        int userId = Session.getUserId();
-        List<Tugas> list = tugasService.getAllByUser(userId);
+    private void loadSemuaTugas() {
+        List<Tugas> list = tugasService.getAllTugas();
         view.tampilkanTugas(list);
     }
 }

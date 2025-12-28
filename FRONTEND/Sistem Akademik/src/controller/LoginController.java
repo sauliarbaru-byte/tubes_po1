@@ -33,7 +33,7 @@ public class LoginController {
 
             // ✅ SIMPAN SESSION DI SINI
             Session.setUser(
-                user.getId(),
+                user.getUsername(),
                 user.getUsername()
             );
 

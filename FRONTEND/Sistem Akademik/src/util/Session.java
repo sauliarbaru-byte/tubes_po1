@@ -2,16 +2,16 @@ package util;
 
 public class Session {
 
-    private static int userId;
+    private static String nim;
     private static String username;
 
-    public static void setUser(int id, String username) {
-        Session.userId = id;
+    public static void setUser(String nim, String username) {
+        Session.nim = nim;
         Session.username = username;
     }
 
-    public static int getUserId() {
-        return userId;
+    public static String getNim() {
+        return nim;
     }
 
     public static String getUsername() {
@@ -19,11 +19,11 @@ public class Session {
     }
 
     public static boolean isLogin() {
-        return username != null;
+        return nim != null;
     }
 
     public static void clear() {
-        userId = 0;
+        nim = null;
         username = null;
     }
 }
