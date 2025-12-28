@@ -9,21 +9,20 @@ public class Tugas {
     private String deskripsi;
     private LocalDateTime deadline;
     private String status;
+    private String priority; // ⭐ BARU
 
-    // ✅ Constructor kosong (penting untuk JavaFX dan Service)
     public Tugas() {}
 
-    // ✅ Constructor lengkap (boleh dipakai di backend)
     public Tugas(int mataKuliahId, String judul, String deskripsi,
-                 LocalDateTime deadline, String status) {
+                 LocalDateTime deadline, String status, String priority) {
         this.mataKuliahId = mataKuliahId;
         this.judul = judul;
         this.deskripsi = deskripsi;
         this.deadline = deadline;
         this.status = status;
+        this.priority = priority;
     }
 
-    // ✅ Getter (pengambil nilai)
     public int getMataKuliahId() {
         return mataKuliahId;
     }
@@ -44,7 +43,10 @@ public class Tugas {
         return status;
     }
 
-    // ✅ Setter (mengubah nilai)
+    public String getPriority() {
+        return priority;
+    }
+
     public void setMataKuliahId(int mataKuliahId) {
         this.mataKuliahId = mataKuliahId;
     }
@@ -63,5 +65,9 @@ public class Tugas {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 }
