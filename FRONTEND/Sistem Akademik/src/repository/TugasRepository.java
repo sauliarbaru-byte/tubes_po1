@@ -3,7 +3,6 @@ package repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +25,8 @@ public class TugasRepository {
             ps.setDate(3, java.sql.Date.valueOf(tugas.getDeadline()));
             ps.setString(4, tugas.getStatus());
             ps.setString(5, tugas.getPriority());
-
             ps.executeUpdate();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,44 +37,25 @@ public class TugasRepository {
     }
 
     public List<Tugas> findByPriority(String priority) {
-        return findByQuery(
-            "SELECT * FROM tugas WHERE priority = ?",
-            priority
-        );
+        return findByQuery("SELECT * FROM tugas WHERE priority = ?", priority);
     }
 
     public List<Tugas> findDeadlineHariIni() {
-        return findByQuery(
-            "SELECT * FROM tugas WHERE deadline = CURDATE()"
-        );
+        return findByQuery("SELECT * FROM tugas WHERE deadline = CURDATE()");
     }
 
     public List<Tugas> findDeadlineBesok() {
-        return findByQuery(
-            "SELECT * FROM tugas WHERE deadline = CURDATE() + INTERVAL 1 DAY"
-        );
+        return findByQuery("SELECT * FROM tugas WHERE deadline = CURDATE() + INTERVAL 1 DAY");
     }
 
     public List<Tugas> findTanpaDeadline() {
-        return findByQuery(
-            "SELECT * FROM tugas WHERE deadline IS NULL"
-        );
+        return findByQuery("SELECT * FROM tugas WHERE deadline IS NULL");
     }
 
-    public void updateStatusSelesai(int idTugas) {
-        String sql = "UPDATE tugas SET status='Selesai' WHERE id_tugas=?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, idTugas);
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public List<Tugas> findByNim(String nim) {
+        return findByQuery("SELECT * FROM tugas WHERE nim = ?", nim);
     }
 
-    // helper
     private List<Tugas> findByQuery(String sql, Object... params) {
         List<Tugas> list = new ArrayList<>();
 

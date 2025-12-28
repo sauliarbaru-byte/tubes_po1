@@ -2,6 +2,7 @@ package controller;
 
 import model.User;
 import repository.UserRepository;
+import util.Session;
 import view.DashboardView;
 import view.LoginView;
 
@@ -23,27 +24,27 @@ public class LoginController {
     }
 
     private void login() {
-        
+
         String username = view.getUsername().trim();
         String password = view.getPassword().trim();
-    
-        
-        System.out.println("Username yang dikirim ke query: '" + username + "'");
-        System.out.println("Password yang dikirim ke query: '" + password + "'");
-    
-        
+
         User user = userRepository.login(username, password);
-    
+
         if (user != null) {
-            
+
+            // SIMPAN SESSION
+            Session.setUser(
+                    user.getNim(),
+                    user.getUsername(),
+                    user.getEmail()
+            );
+
             DashboardView dashboard = new DashboardView(user);
             dashboard.setVisible(true);
-    
-            
             view.dispose();
+
         } else {
             JOptionPane.showMessageDialog(view, "Username atau password salah!");
         }
     }
-    
 }

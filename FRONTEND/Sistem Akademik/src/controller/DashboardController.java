@@ -17,15 +17,12 @@ public class DashboardController {
         this.view = view;
         this.tugasService = new TugasService();
 
-        // load awal
         loadSemuaTugas();
 
-        // tombol tambah tugas
         view.getBtnTambahTugas().addActionListener(e ->
                 new TambahTugasView(view).setVisible(true)
         );
 
-        // filter priority
         view.getBtnPriority().addActionListener(e -> {
             String[] options = {"HIGH", "MEDIUM", "LOW"};
             String pilihan = (String) JOptionPane.showInputDialog(
@@ -44,7 +41,6 @@ public class DashboardController {
             }
         });
 
-        // filter deadline
         view.getBtnDeadline().addActionListener(e -> {
             String[] options = {"HARI_INI", "BESOK", "TANPA_DEADLINE"};
             String pilihan = (String) JOptionPane.showInputDialog(
