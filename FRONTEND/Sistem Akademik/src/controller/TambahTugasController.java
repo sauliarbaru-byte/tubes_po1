@@ -1,42 +1,29 @@
 package controller;
 
 import model.Tugas;
-import service.TugasService;
-import view.TambahTugasView;
-
-import javax.swing.*;
-import java.time.LocalDateTime;
+import repository.TugasRepository;
 
 public class TambahTugasController {
 
-    private TambahTugasView view;
-    private TugasService service;
+    private TugasRepository tugasRepository;
 
-    public TambahTugasController(TambahTugasView view) {
-        this.view = view;
-        this.service = new TugasService();
-
-        view.getBtnSimpan().addActionListener(e -> simpan());
+    public TambahTugasController() {
+        tugasRepository = new TugasRepository();
     }
 
-    private void simpan() {
-        try {
-            Tugas t = new Tugas();
-            t.setMataKuliahId(1); // sementara
-            t.setJudul(view.getTxtJudul().getText());
-            t.setDeskripsi(view.getTxtDeskripsi().getText());
-            t.setDeadline(LocalDateTime.parse(
-                    view.getTxtDeadline().getText().replace(" ", "T")
-            ));
-            t.setStatus(view.getCmbStatus().getSelectedItem().toString());
+    public void tambahTugas(
+            String nim,
+            String judul,
+            String deadline,
+            String priority
+    ) {
+        Tugas tugas = new Tugas();
+        tugas.setNim(nim);
+        tugas.setJudul(judul);
+        tugas.setDeadline(java.time.LocalDate.parse(deadline));
+        tugas.setStatus("Belum");
+        tugas.setPriority(priority);
 
-            service.tambahTugas(t);
-
-            JOptionPane.showMessageDialog(view, "Tugas berhasil disimpan!");
-            view.dispose();
-
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(view, "Input tidak valid!");
-        }
+        tugasRepository.insert(tugas);
     }
 }

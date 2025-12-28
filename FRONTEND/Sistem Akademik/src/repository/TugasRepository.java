@@ -1,189 +1,64 @@
 package repository;
 
-import model.Tugas;
-import util.DBConnection;
-
-import java.sql.*;
-import java.time.LocalDateTime;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Tugas;
+import util.DBConnection;
+
 public class TugasRepository {
 
-    public void tambahTugas(Tugas tugas) {
-        String sql = "INSERT INTO tugas (mata_kuliah_id, judul, deskripsi, deadline, status) VALUES (?, ?, ?, ?, ?)";
+    public void insert(Tugas tugas) {
+        String sql = """
+            INSERT INTO tugas (nim, judul, deadline, status, priority)
+            VALUES (?, ?, ?, ?, ?)
+        """;
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, tugas.getMataKuliahId());
+            ps.setString(1, tugas.getNim());
             ps.setString(2, tugas.getJudul());
-            ps.setString(3, tugas.getDeskripsi());
-            ps.setTimestamp(4, Timestamp.valueOf(tugas.getDeadline()));
-            ps.setString(5, tugas.getStatus());
+            ps.setDate(3, java.sql.Date.valueOf(tugas.getDeadline()));
+            ps.setString(4, tugas.getStatus());
+            ps.setString(5, tugas.getPriority());
 
             ps.executeUpdate();
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    
-    public List<Tugas> getAllTugas() {
+    public List<Tugas> findByNim(String nim) {
         List<Tugas> list = new ArrayList<>();
-        String sql = "SELECT * FROM tugas ORDER BY deadline ASC";
+
+        String sql = "SELECT * FROM tugas WHERE nim = ?";
 
         try (Connection conn = DBConnection.getConnection();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, nim);
+            ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
                 Tugas t = new Tugas();
-                t.setMataKuliahId(rs.getInt("mata_kuliah_id"));
+                t.setIdTugas(rs.getInt("id_tugas"));
+                t.setNim(rs.getString("nim"));
                 t.setJudul(rs.getString("judul"));
-                t.setDeskripsi(rs.getString("deskripsi"));
-                t.setDeadline(rs.getTimestamp("deadline").toLocalDateTime());
+                t.setDeadline(rs.getDate("deadline").toLocalDate());
                 t.setStatus(rs.getString("status"));
-
+                t.setPriority(rs.getString("priority"));
                 list.add(t);
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return list;
     }
-
-    // =======================
-// FILTER PRIORITY
-// =======================
-public List<Tugas> findByPriority(String status) {
-    List<Tugas> list = new ArrayList<>();
-    String sql = "SELECT * FROM tugas WHERE status = ?";
-
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-
-        ps.setString(1, status);
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-            Tugas t = new Tugas();
-            t.setMataKuliahId(rs.getInt("mata_kuliah_id"));
-            t.setJudul(rs.getString("judul"));
-            t.setDeskripsi(rs.getString("deskripsi"));
-            t.setDeadline(rs.getTimestamp("deadline").toLocalDateTime());
-            t.setStatus(rs.getString("status"));
-            list.add(t);
-        }
-
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-
-    return list;
-}
-
-// =======================
-// DEADLINE HARI INI
-// =======================
-public List<Tugas> findDeadlineHariIni() {
-    List<Tugas> list = new ArrayList<>();
-    String sql = "SELECT * FROM tugas WHERE DATE(deadline) = CURDATE()";
-
-    try (Connection conn = DBConnection.getConnection();
-         Statement st = conn.createStatement();
-         ResultSet rs = st.executeQuery(sql)) {
-
-        while (rs.next()) {
-            Tugas t = new Tugas();
-            t.setMataKuliahId(rs.getInt("mata_kuliah_id"));
-            t.setJudul(rs.getString("judul"));
-            t.setDeskripsi(rs.getString("deskripsi"));
-            t.setDeadline(rs.getTimestamp("deadline").toLocalDateTime());
-            t.setStatus(rs.getString("status"));
-            list.add(t);
-        }
-
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-
-    return list;
-}
-
-// =======================
-// DEADLINE BESOK
-// =======================
-public List<Tugas> findDeadlineBesok() {
-    List<Tugas> list = new ArrayList<>();
-    String sql = "SELECT * FROM tugas WHERE DATE(deadline) = CURDATE() + INTERVAL 1 DAY";
-
-    try (Connection conn = DBConnection.getConnection();
-         Statement st = conn.createStatement();
-         ResultSet rs = st.executeQuery(sql)) {
-
-        while (rs.next()) {
-            Tugas t = new Tugas();
-            t.setMataKuliahId(rs.getInt("mata_kuliah_id"));
-            t.setJudul(rs.getString("judul"));
-            t.setDeskripsi(rs.getString("deskripsi"));
-            t.setDeadline(rs.getTimestamp("deadline").toLocalDateTime());
-            t.setStatus(rs.getString("status"));
-            list.add(t);
-        }
-
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-
-    return list;
-}
-
-// =======================
-// TANPA DEADLINE
-// =======================
-public List<Tugas> findTanpaDeadline() {
-    List<Tugas> list = new ArrayList<>();
-    String sql = "SELECT * FROM tugas WHERE deadline IS NULL";
-
-    try (Connection conn = DBConnection.getConnection();
-         Statement st = conn.createStatement();
-         ResultSet rs = st.executeQuery(sql)) {
-
-        while (rs.next()) {
-            Tugas t = new Tugas();
-            t.setMataKuliahId(rs.getInt("mata_kuliah_id"));
-            t.setJudul(rs.getString("judul"));
-            t.setDeskripsi(rs.getString("deskripsi"));
-            t.setStatus(rs.getString("status"));
-            list.add(t);
-        }
-
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-
-    return list;
-}
-
-// =======================
-// UPDATE STATUS SELESAI
-// =======================
-public void updateStatusSelesai(int id) {
-    String sql = "UPDATE tugas SET status = 'SELESAI' WHERE id = ?";
-
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-
-        ps.setInt(1, id);
-        ps.executeUpdate();
-
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-}
-
 }

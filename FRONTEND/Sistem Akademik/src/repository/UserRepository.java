@@ -1,43 +1,41 @@
 package repository;
 
-import model.User;
-import util.DBConnection;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import model.User;
+import util.DBConnection;
+
 public class UserRepository {
 
-    // Login menggunakan username dan password
     public User login(String username, String password) {
-        try {
-            Connection conn = DBConnection.getConnection();
-            String sql = "SELECT * FROM user WHERE username=? AND password=?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-    
-            // Tambahkan log di sini
-            System.out.println("Username yang dikirim ke query: '" + username + "'");
-            System.out.println("Password yang dikirim ke query: '" + password + "'");
-    
+        User user = null;
+
+        String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setString(1, username);
             ps.setString(2, password);
-    
+
             ResultSet rs = ps.executeQuery();
+
             if (rs.next()) {
-                return new User(
-                        rs.getInt("id"),
-                        rs.getString("username"),
-                        rs.getInt("streak"),
-                        rs.getDouble("ipk"),
-                        rs.getInt("today"),
-                        rs.getInt("level")
-                );
+                user = new User();
+                user.setId(rs.getInt("id"));
+                user.setUsername(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
+                user.setRole(rs.getString("role"));
+                user.setIpk(rs.getDouble("ipk"));
+                user.setStreak(rs.getInt("streak"));
             }
-    
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
-    }    
+
+        return user;
+    }
 }

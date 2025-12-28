@@ -12,12 +12,10 @@ public class TambahTugasView extends JFrame {
     private JButton btnSimpan;
 
     public TambahTugasView(DashboardView dashboardView) {
-        setTitle("Tambah Tugas");
-        setSize(300, 400);
+        initComponents();
         setLocationRelativeTo(dashboardView);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setVisible(true);
     }
+
 
     private void initComponents() {
         setTitle("Tambah Tugas");

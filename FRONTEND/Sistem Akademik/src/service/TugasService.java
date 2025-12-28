@@ -13,9 +13,7 @@ public class TugasService {
         tugasRepository = new TugasRepository();
     }
 
-    // ======================
-    // TAMBAH TUGAS
-    // ======================
+    
     public void tambahTugas(Tugas tugas) {
         if (tugas.getStatus() == null) {
             tugas.setStatus("BELUM SELESAI");
@@ -23,16 +21,12 @@ public class TugasService {
         tugasRepository.tambahTugas(tugas);
     }
 
-    // ======================
-    // AMBIL SEMUA TUGAS
-    // ======================
+    
     public List<Tugas> getAllTugas() {
         return tugasRepository.getAllTugas();
     }
 
-    // ======================
-    // FILTER (sementara pakai STATUS)
-    // ======================
+    
     public List<Tugas> getTugasByPriority(String status) {
         return tugasRepository.findByPriority(status);
     }
@@ -49,9 +43,7 @@ public class TugasService {
         return tugasRepository.findTanpaDeadline();
     }
 
-    // ======================
-    // UPDATE STATUS
-    // ======================
+    
     public void tandaiSelesai(int id) {
         tugasRepository.updateStatusSelesai(id);
     }

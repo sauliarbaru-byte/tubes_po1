@@ -5,13 +5,13 @@ import repository.UserRepository;
 
 public class LoginService {
 
-    private UserRepository repository;
+    private UserRepository userRepository;
 
     public LoginService() {
-        repository = new UserRepository();
+        userRepository = new UserRepository();
     }
 
-    public User login(String email, String password) {
-        return repository.login(email, password);
+    public User login(String username, String password) {
+        return userRepository.login(username, password);
     }
 }
