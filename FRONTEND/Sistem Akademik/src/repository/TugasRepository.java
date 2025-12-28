@@ -3,6 +3,7 @@ package repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,21 +28,64 @@ public class TugasRepository {
             ps.setString(5, tugas.getPriority());
 
             ps.executeUpdate();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public List<Tugas> findByNim(String nim) {
-        List<Tugas> list = new ArrayList<>();
+    public List<Tugas> getAllTugas() {
+        return findByQuery("SELECT * FROM tugas");
+    }
 
-        String sql = "SELECT * FROM tugas WHERE nim = ?";
+    public List<Tugas> findByPriority(String priority) {
+        return findByQuery(
+            "SELECT * FROM tugas WHERE priority = ?",
+            priority
+        );
+    }
+
+    public List<Tugas> findDeadlineHariIni() {
+        return findByQuery(
+            "SELECT * FROM tugas WHERE deadline = CURDATE()"
+        );
+    }
+
+    public List<Tugas> findDeadlineBesok() {
+        return findByQuery(
+            "SELECT * FROM tugas WHERE deadline = CURDATE() + INTERVAL 1 DAY"
+        );
+    }
+
+    public List<Tugas> findTanpaDeadline() {
+        return findByQuery(
+            "SELECT * FROM tugas WHERE deadline IS NULL"
+        );
+    }
+
+    public void updateStatusSelesai(int idTugas) {
+        String sql = "UPDATE tugas SET status='Selesai' WHERE id_tugas=?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, nim);
+            ps.setInt(1, idTugas);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // helper
+    private List<Tugas> findByQuery(String sql, Object... params) {
+        List<Tugas> list = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            for (int i = 0; i < params.length; i++) {
+                ps.setObject(i + 1, params[i]);
+            }
+
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -49,7 +93,11 @@ public class TugasRepository {
                 t.setIdTugas(rs.getInt("id_tugas"));
                 t.setNim(rs.getString("nim"));
                 t.setJudul(rs.getString("judul"));
-                t.setDeadline(rs.getDate("deadline").toLocalDate());
+
+                if (rs.getDate("deadline") != null) {
+                    t.setDeadline(rs.getDate("deadline").toLocalDate());
+                }
+
                 t.setStatus(rs.getString("status"));
                 t.setPriority(rs.getString("priority"));
                 list.add(t);

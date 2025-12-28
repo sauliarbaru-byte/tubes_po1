@@ -1,17 +1,15 @@
 package model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class Tugas {
 
     private int idTugas;
     private String nim;
     private String judul;
-    private LocalDateTime deadline;
+    private LocalDate deadline;
     private String status;
     private String priority;
-
-    public Tugas() {}
 
     public int getIdTugas() {
         return idTugas;
@@ -37,11 +35,11 @@ public class Tugas {
         this.judul = judul;
     }
 
-    public LocalDateTime getDeadline() {
+    public LocalDate getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDateTime deadline) {
+    public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
     }
 

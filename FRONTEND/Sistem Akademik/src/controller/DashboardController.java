@@ -17,17 +17,17 @@ public class DashboardController {
         this.view = view;
         this.tugasService = new TugasService();
 
-        // ✅ LOAD SEMUA TUGAS SAAT DASHBOARD DIBUKA
+        // load awal
         loadSemuaTugas();
 
-        // ===== BUTTON TAMBAH TASK =====
+        // tombol tambah tugas
         view.getBtnTambahTugas().addActionListener(e ->
                 new TambahTugasView(view).setVisible(true)
         );
 
-        // ===== FILTER PRIORITY =====
+        // filter priority
         view.getBtnPriority().addActionListener(e -> {
-            String[] options = {"URGENT", "HIGH", "MEDIUM"};
+            String[] options = {"HIGH", "MEDIUM", "LOW"};
             String pilihan = (String) JOptionPane.showInputDialog(
                     view,
                     "Pilih Priority",
@@ -39,12 +39,12 @@ public class DashboardController {
             );
 
             if (pilihan != null) {
-                List<Tugas> hasil = tugasService.getTugasByPriority(pilihan);
+                List<Tugas> hasil = tugasService.getByPriority(pilihan);
                 view.tampilkanTugas(hasil);
             }
         });
 
-        // ===== FILTER DEADLINE =====
+        // filter deadline
         view.getBtnDeadline().addActionListener(e -> {
             String[] options = {"HARI_INI", "BESOK", "TANPA_DEADLINE"};
             String pilihan = (String) JOptionPane.showInputDialog(
@@ -62,13 +62,13 @@ public class DashboardController {
 
                 switch (pilihan) {
                     case "HARI_INI":
-                        hasil = tugasService.getTugasHariIni();
+                        hasil = tugasService.getDeadlineHariIni();
                         break;
                     case "BESOK":
-                        hasil = tugasService.getTugasBesok();
+                        hasil = tugasService.getDeadlineBesok();
                         break;
                     default:
-                        hasil = tugasService.getTugasTanpaDeadline();
+                        hasil = tugasService.getTanpaDeadline();
                         break;
                 }
 

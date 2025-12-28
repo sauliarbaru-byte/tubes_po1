@@ -1,50 +1,39 @@
 package service;
 
+import java.util.List;
+
 import model.Tugas;
 import repository.TugasRepository;
 
-import java.util.List;
-
 public class TugasService {
 
-    private TugasRepository tugasRepository;
+    private TugasRepository repository = new TugasRepository();
 
-    public TugasService() {
-        tugasRepository = new TugasRepository();
-    }
-
-    
     public void tambahTugas(Tugas tugas) {
-        if (tugas.getStatus() == null) {
-            tugas.setStatus("BELUM SELESAI");
-        }
-        tugasRepository.tambahTugas(tugas);
+        repository.insert(tugas);
     }
 
-    
     public List<Tugas> getAllTugas() {
-        return tugasRepository.getAllTugas();
+        return repository.getAllTugas();
     }
 
-    
-    public List<Tugas> getTugasByPriority(String status) {
-        return tugasRepository.findByPriority(status);
+    public List<Tugas> getByPriority(String priority) {
+        return repository.findByPriority(priority);
     }
 
-    public List<Tugas> getTugasHariIni() {
-        return tugasRepository.findDeadlineHariIni();
+    public List<Tugas> getDeadlineHariIni() {
+        return repository.findDeadlineHariIni();
     }
 
-    public List<Tugas> getTugasBesok() {
-        return tugasRepository.findDeadlineBesok();
+    public List<Tugas> getDeadlineBesok() {
+        return repository.findDeadlineBesok();
     }
 
-    public List<Tugas> getTugasTanpaDeadline() {
-        return tugasRepository.findTanpaDeadline();
+    public List<Tugas> getTanpaDeadline() {
+        return repository.findTanpaDeadline();
     }
 
-    
-    public void tandaiSelesai(int id) {
-        tugasRepository.updateStatusSelesai(id);
+    public void tandaiSelesai(int idTugas) {
+        repository.updateStatusSelesai(idTugas);
     }
 }
