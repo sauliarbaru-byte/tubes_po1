@@ -1,7 +1,7 @@
 package controller;
 
 import model.User;
-import repository.UserRepository;
+import service.LoginService;
 import util.Session;
 import view.DashboardView;
 import view.LoginView;
@@ -11,11 +11,11 @@ import javax.swing.*;
 public class LoginController {
 
     private LoginView view;
-    private UserRepository userRepository;
+    private LoginService loginService;
 
     public LoginController(LoginView view) {
         this.view = view;
-        this.userRepository = new UserRepository();
+        this.loginService = new LoginService();
         initController();
     }
 
@@ -24,26 +24,29 @@ public class LoginController {
     }
 
     private void login() {
-        String username = view.getUsername().trim();
-        String password = view.getPassword().trim();
+    String username = view.getUsername().trim();
+    String password = view.getPassword().trim();
 
-        User user = userRepository.login(username, password);
+    System.out.println("LOGIN DITEKAN");
+    System.out.println("Username: " + username);
+    System.out.println("Password: " + password);
 
-        if (user != null) {
+    User user = loginService.login(username, password);
 
-            // ✅ SIMPAN SESSION DI SINI
-            Session.setUser(
-                user.getUsername(),
-                user.getUsername()
-            );
+    System.out.println("User hasil login: " + user);
 
-            // ✅ constructor sesuai DashboardView(User user)
-            DashboardView dashboard = new DashboardView(user);
-            dashboard.setVisible(true);
-            view.dispose();
+    if (user != null) {
 
-        } else {
-            JOptionPane.showMessageDialog(view, "Username atau password salah!");
-        }
+        System.out.println("LOGIN BERHASIL");
+
+        Session.setUser(username, username);
+
+        DashboardView dashboard = new DashboardView(user);
+        dashboard.setVisible(true);
+        view.dispose();
+
+    } else {
+        JOptionPane.showMessageDialog(view, "Username atau password salah!");
     }
+}
 }

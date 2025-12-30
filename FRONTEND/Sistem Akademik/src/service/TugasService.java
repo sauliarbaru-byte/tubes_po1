@@ -1,40 +1,53 @@
 package service;
 
-import java.util.List;
-
 import model.Tugas;
-import repository.TugasRepository;
+import storage.TugasStorage;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TugasService {
 
-    private TugasRepository repository = new TugasRepository();
-
-    public void tambahTugas(Tugas tugas) {
-        repository.insert(tugas);
-    }
-    
+    private TugasStorage storage = TugasStorage.getInstance();
 
     public List<Tugas> getAllTugas() {
-        return repository.getAllTugas();
+        return storage.getAll();
     }
 
     public List<Tugas> getByPriority(String priority) {
-        return repository.findByPriority(priority);
+        return storage.getAll()
+                .stream()
+                .filter(t -> t.getPriority().equalsIgnoreCase(priority))
+                .collect(Collectors.toList());
     }
 
-    public List<Tugas> getDeadlineHariIni() {
-        return repository.findDeadlineHariIni();
+    public void tambahTugas(Tugas tugas) {
+        storage.add(tugas);
     }
 
-    public List<Tugas> getDeadlineBesok() {
-        return repository.findDeadlineBesok();
-    }
+    // ================= DASHBOARD COMPATIBILITY =================
 
-    public List<Tugas> getTanpaDeadline() {
-        return repository.findTanpaDeadline();
-    }
+public List<Tugas> getDeadlineHariIni() {
+    return storage.getAll()
+            .stream()
+            .filter(t -> t.getDeadline() != null)
+            .limit(3) // dummy dulu
+            .toList();
+}
 
-    public void tandaiSelesai(int idTugas) {
-        repository.updateStatusSelesai(idTugas);
-    }
+public List<Tugas> getDeadlineBesok() {
+    return storage.getAll()
+            .stream()
+            .filter(t -> t.getDeadline() != null)
+            .limit(3)
+            .toList();
+}
+
+public List<Tugas> getTanpaDeadline() {
+    return storage.getAll()
+            .stream()
+            .filter(t -> t.getDeadline() == null)
+            .toList();
+}
+
 }
