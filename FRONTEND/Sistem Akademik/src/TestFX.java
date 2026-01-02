@@ -7,8 +7,8 @@ public class TestFX extends Application {
 
     @Override
     public void start(Stage stage) {
-        Label label = new Label("JavaFX OK 🚀");
-        Scene scene = new Scene(label, 300, 200);
+        Label label = new Label("JavaFX jalan 🚀");
+        Scene scene = new Scene(label, 400, 200);
         stage.setScene(scene);
         stage.setTitle("Test JavaFX");
         stage.show();

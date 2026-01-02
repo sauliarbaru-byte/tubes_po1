@@ -1,12 +1,19 @@
 {
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "type": "java",
-      "name": "Run JavaFX",
-      "request": "launch",
-      "mainClass": "main.MainFX",
-      "vmArgs": "--module-path \"C:/javafx/javafx-sdk-23/lib\" --add-modules javafx.controls,javafx.fxml"
-    }
-  ]
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "main.Main",
+            "projectName": "Sistem Akademik_93b3e9d4"
+        },
+        {
+            "type": "java",
+            "name": "Run JavaFX",
+            "request": "launch",
+            "mainClass": "TestFX",
+            "vmArgs": "--module-path \"C:/javafx/javafx-sdk-23/javafx-sdk-23.0.2/lib\" --add-modules javafx.controls,javafx.fxml,javafx.graphics"
+        }
+    ]
 }
