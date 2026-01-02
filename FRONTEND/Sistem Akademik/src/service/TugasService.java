@@ -3,51 +3,59 @@ package service;
 import model.Tugas;
 import storage.TugasStorage;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDate;
 
 public class TugasService {
 
-    private TugasStorage storage = TugasStorage.getInstance();
+    // ================= DASHBOARD =================
 
-    public List<Tugas> getAllTugas() {
-        return storage.getAll();
+    public int hitungDeadlineHariIni() {
+        LocalDate today = LocalDate.now();
+        int count = 0;
+
+        for (Tugas t : TugasStorage.getSemua()) {
+            if (t.getDeadline().isEqual(today)) {
+                count++;
+            }
+        }
+        return count;
     }
 
-    public List<Tugas> getByPriority(String priority) {
-        return storage.getAll()
-                .stream()
-                .filter(t -> t.getPriority().equalsIgnoreCase(priority))
-                .collect(Collectors.toList());
+    public int hitungDeadlineBesok() {
+        LocalDate besok = LocalDate.now().plusDays(1);
+        int count = 0;
+
+        for (Tugas t : TugasStorage.getSemua()) {
+            if (t.getDeadline().isEqual(besok)) {
+                count++;
+            }
+        }
+        return count;
     }
 
-    public void tambahTugas(Tugas tugas) {
-        storage.add(tugas);
+    public int hitungTerlambat() {
+        LocalDate today = LocalDate.now();
+        int count = 0;
+
+        for (Tugas t : TugasStorage.getSemua()) {
+            if (t.getDeadline().isBefore(today)) {
+                count++;
+            }
+        }
+        return count;
     }
 
-    // ================= DASHBOARD COMPATIBILITY =================
+    // ================= CONTROLLER =================
 
-public List<Tugas> getDeadlineHariIni() {
-    return storage.getAll()
-            .stream()
-            .filter(t -> t.getDeadline() != null)
-            .limit(3) // dummy dulu
-            .toList();
-}
+    public String getStatus(Tugas tugas) {
+        LocalDate today = LocalDate.now();
 
-public List<Tugas> getDeadlineBesok() {
-    return storage.getAll()
-            .stream()
-            .filter(t -> t.getDeadline() != null)
-            .limit(3)
-            .toList();
-}
-
-public List<Tugas> getTanpaDeadline() {
-    return storage.getAll()
-            .stream()
-            .filter(t -> t.getDeadline() == null)
-            .toList();
-}
-
+        if (tugas.getDeadline().isBefore(today)) {
+            return "Terlambat ❌";
+        } else if (tugas.getDeadline().isEqual(today)) {
+            return "Hari ini ⚠";
+        } else {
+            return "Aman ✅";
+        }
+    }
 }

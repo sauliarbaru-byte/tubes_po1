@@ -1,87 +1,18 @@
 package controller;
 
-import model.Tugas;
-import service.TugasService;
-import util.Session;
-import view.DashboardView;
-import view.TambahTugasView;
-
-import javax.swing.*;
-import java.util.List;
+import model.DashboardSummary;
+import model.User;
+import service.DashboardService;
 
 public class DashboardController {
 
-    private DashboardView view;
-    private TugasService tugasService;
+    private DashboardService dashboardService;
 
-    public DashboardController(DashboardView view) {
-        this.view = view;
-        this.tugasService = new TugasService();
-
-       
-        if (!Session.isLogin()) {
-            JOptionPane.showMessageDialog(view, "Silakan login terlebih dahulu");
-            System.exit(0);
-        }
-
-        loadSemuaTugas();
-
-        view.getBtnTambahTugas().addActionListener(e ->
-                new TambahTugasView(view).setVisible(true)
-        );
-
-        view.getBtnPriority().addActionListener(e -> {
-            String[] options = {"HIGH", "MEDIUM", "LOW"};
-            String pilihan = (String) JOptionPane.showInputDialog(
-                    view,
-                    "Pilih Priority",
-                    "Filter Priority",
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    options,
-                    options[0]
-            );
-
-            if (pilihan != null) {
-                List<Tugas> hasil = tugasService.getByPriority(pilihan);
-                view.tampilkanTugas(hasil);
-            }
-        });
-
-        view.getBtnDeadline().addActionListener(e -> {
-            String[] options = {"HARI_INI", "BESOK", "TANPA_DEADLINE"};
-            String pilihan = (String) JOptionPane.showInputDialog(
-                    view,
-                    "Pilih Deadline",
-                    "Filter Deadline",
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    options,
-                    options[0]
-            );
-
-            if (pilihan != null) {
-                List<Tugas> hasil;
-
-                switch (pilihan) {
-                    case "HARI_INI":
-                        hasil = tugasService.getDeadlineHariIni();
-                        break;
-                    case "BESOK":
-                        hasil = tugasService.getDeadlineBesok();
-                        break;
-                    default:
-                        hasil = tugasService.getTanpaDeadline();
-                        break;
-                }
-
-                view.tampilkanTugas(hasil);
-            }
-        });
+    public DashboardController(DashboardService dashboardService) {
+        this.dashboardService = dashboardService;
     }
 
-    private void loadSemuaTugas() {
-        List<Tugas> list = tugasService.getAllTugas();
-        view.tampilkanTugas(list);
+    public DashboardSummary loadDashboard(User user) {
+        return dashboardService.buildDashboard(user);
     }
 }

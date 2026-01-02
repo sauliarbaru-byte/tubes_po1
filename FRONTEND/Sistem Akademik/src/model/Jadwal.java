@@ -1,32 +1,34 @@
 package model;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+
 public class Jadwal {
+    private DayOfWeek hari;
+    private LocalTime jamMulai;
+    private LocalTime jamSelesai;
+    private MataKuliah mataKuliah;
 
-    private int id;
-    private int mataKuliahId;
-    private String hari;
-    private String jam;
-
-    public Jadwal(int id, int mataKuliahId, String hari, String jam) {
-        this.id = id;
-        this.mataKuliahId = mataKuliahId;
+    public Jadwal(DayOfWeek hari, LocalTime jamMulai, LocalTime jamSelesai, MataKuliah mataKuliah) {
         this.hari = hari;
-        this.jam = jam;
+        this.jamMulai = jamMulai;
+        this.jamSelesai = jamSelesai;
+        this.mataKuliah = mataKuliah;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public int getMataKuliahId() {
-        return mataKuliahId;
-    }
-
-    public String getHari() {
+    public DayOfWeek getHari() {
         return hari;
     }
 
-    public String getJam() {
-        return jam;
+    public LocalTime getJamMulai() {
+        return jamMulai;
+    }
+
+    public LocalTime getJamSelesai() {
+        return jamSelesai;
+    }
+
+    public MataKuliah getMataKuliah() {
+        return mataKuliah;
     }
 }

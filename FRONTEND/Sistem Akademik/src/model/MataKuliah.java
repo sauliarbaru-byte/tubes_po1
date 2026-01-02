@@ -1,20 +1,40 @@
 package model;
 
 public class MataKuliah {
-
-    private int id;
     private String nama;
+    private int sks;
+    private String dosen;
+    private String nilaiHuruf;
 
-    public MataKuliah(int id, String nama) {
-        this.id = id;
+    // 🔹 UNTUK JADWAL
+    public MataKuliah(String nama, int sks, String dosen) {
         this.nama = nama;
+        this.sks = sks;
+        this.dosen = dosen;
+        this.nilaiHuruf = "-";
     }
 
-    public int getId() {
-        return id;
+    // 🔹 UNTUK NILAI / IPK
+    public MataKuliah(String nama, int sks, String dosen, String nilaiHuruf) {
+        this.nama = nama;
+        this.sks = sks;
+        this.dosen = dosen;
+        this.nilaiHuruf = nilaiHuruf;
     }
 
     public String getNama() {
         return nama;
+    }
+
+    public int getSks() {
+        return sks;
+    }
+
+    public String getDosen() {
+        return dosen;
+    }
+
+    public String getNilaiHuruf() {
+        return nilaiHuruf;
     }
 }
