@@ -1,186 +1,136 @@
 package view;
 
-import javafx.animation.*;
+import javafx.animation.ScaleTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
-import service.TugasService;
-import util.SceneManager;
 
 public class DashboardView {
 
     private BorderPane root;
+    private ProgressBar progress;
+    private Label info;
+    private Label streakLabel;
 
-    // ===== DATA DARI SERVICE =====
-    private final TugasService tugasService = new TugasService();
-
-    private int doneTask;
-    private int totalTask;
-    private final int streakDay = 5; // sementara (boleh statis untuk presentasi)
+    private final int totalMatkul = 3;
+    private int hadirCount = 0;
+    private int streak = 0;
+    private boolean streakDicatat = false;
 
     public DashboardView() {
-        // ambil data nyata
-        doneTask = tugasService.getJumlahSelesai();
-        totalTask = tugasService.getTotalTugas();
-
         buildUI();
     }
 
     private void buildUI() {
 
-        // ===== HEADER =====
-        Label title = new Label("Dashboard");
-        title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+        TopNavbar navbar = new TopNavbar("dashboard");
 
-        HBox header = new HBox(title);
-        header.setAlignment(Pos.CENTER_LEFT);
-        header.setPadding(new Insets(20));
+        Label ipkTitle = new Label("IPK Terakhir");
+        Label ipk = new Label("3.80");
+        ipk.setStyle("-fx-font-size:26px;-fx-font-weight:bold;");
 
-        // ===== PROGRESS SECTION =====
-        VBox progressSection = buildProgressSection();
+        VBox ipkCard = card(ipkTitle, ipk);
 
-        // ===== SUMMARY CARDS =====
-        HBox cards = new HBox(14,
-                createCard("🔥 Streak", streakDay + " Hari"),
-                createCard("✔ Today", doneTask + "/" + totalTask),
-                createCard("⭐ Level", "Intermediate")
-        );
-        cards.setAlignment(Pos.CENTER);
-        cards.setPadding(new Insets(10));
+        Label streakTitle = new Label("Streak Kehadiran");
+        streakLabel = new Label("🔥 0 Hari");
+        streakLabel.setStyle("-fx-font-size:22px;-fx-font-weight:bold;");
 
-        // ===== NAVIGATION =====
-        Button tasksBtn = new Button("Tasks");
-        Button profileBtn = new Button("Profile");
+        VBox streakCard = card(streakTitle, streakLabel);
 
-        tasksBtn.setOnAction(e ->
-                SceneManager.show(
-                        new TasksView().getView(),
-                        SceneManager.Anim.SLIDE_LEFT
-                )
-        );
+        Label absTitle = new Label("Absensi Hari Ini");
+        info = new Label("0 dari 3 mata kuliah hadir");
 
-        profileBtn.setOnAction(e ->
-                SceneManager.show(
-                        new ProfileView().getView(),
-                        SceneManager.Anim.SLIDE_LEFT
-                )
+        progress = new ProgressBar(0);
+        progress.setPrefWidth(Double.MAX_VALUE);
+
+        VBox absensiCard = new VBox(10, absTitle, info, progress);
+        absensiCard.setPadding(new Insets(20));
+        absensiCard.setStyle("""
+            -fx-background-color:#F1F8FF;
+            -fx-background-radius:18;
+        """);
+
+        VBox list = new VBox(14,
+                absensiItem("Pemrograman Objek", "08.00 - 09.40"),
+                absensiItem("Basis Data", "10.00 - 11.40"),
+                absensiItem("Jaringan Komputer", "13.00 - 14.40")
         );
 
-        HBox nav = new HBox(20, tasksBtn, profileBtn);
-        nav.setAlignment(Pos.CENTER);
-        nav.setPadding(new Insets(20));
-
-        VBox content = new VBox(20, progressSection, cards, nav);
+        VBox content = new VBox(20, ipkCard, streakCard, absensiCard, list);
+        content.setMaxWidth(900);
         content.setAlignment(Pos.TOP_CENTER);
 
+        StackPane center = new StackPane(content);
+        center.setPadding(new Insets(24));
+
         root = new BorderPane();
-        root.setTop(header);
-        root.setCenter(content);
+        root.setTop(navbar);
+        root.setCenter(center);
     }
 
-    // ======================================================
-    // === PROGRESS HARIAN + STREAK (ANIMATED)
-    // ======================================================
-    private VBox buildProgressSection() {
+    private VBox card(Label title, Label value) {
+        VBox box = new VBox(6, title, value);
+        box.setPadding(new Insets(20));
+        box.setStyle("""
+            -fx-background-color:white;
+            -fx-background-radius:18;
+            -fx-border-color:#EEE;
+        """);
+        return box;
+    }
 
-        // ---- TODAY PROGRESS ----
-        Label todayLabel = new Label("Progress Hari Ini");
-        ProgressBar todayBar = new ProgressBar(0);
-        todayBar.setPrefWidth(260);
+    private HBox absensiItem(String matkul, String jam) {
 
-        double todayProgress =
-                totalTask == 0 ? 0 : (double) doneTask / totalTask;
+        CheckBox cb = new CheckBox();
 
-        animateProgress(todayBar, todayProgress);
-
-        Label todayText = new Label(
-                doneTask + " dari " + totalTask + " tugas selesai"
+        VBox infoBox = new VBox(
+                new Label(matkul),
+                new Label(jam)
         );
+        infoBox.getChildren().get(0).setStyle("-fx-font-weight:bold;");
+        infoBox.getChildren().get(1).setStyle("-fx-text-fill:#666;");
 
-        VBox todayBox = new VBox(6, todayLabel, todayBar, todayText);
-        todayBox.setPadding(new Insets(14));
-        todayBox.setStyle("""
-            -fx-background-color: #fde7c3;
-            -fx-background-radius: 14;
+        HBox box = new HBox(14, cb, infoBox);
+        box.setPadding(new Insets(16));
+        box.setAlignment(Pos.CENTER_LEFT);
+        box.setStyle("""
+            -fx-background-color:white;
+            -fx-background-radius:14;
+            -fx-border-color:#EEE;
         """);
 
-        // ---- STREAK PROGRESS ----
-        Label streakLabel = new Label("Streak Mingguan");
-        ProgressIndicator streakIndicator = new ProgressIndicator(0);
-
-        double streakProgress = streakDay / 7.0;
-        animateProgress(streakIndicator, streakProgress);
-
-        Label streakText = new Label(streakDay + " / 7 hari");
-
-        VBox streakBox = new VBox(6, streakLabel, streakIndicator, streakText);
-        streakBox.setAlignment(Pos.CENTER);
-        streakBox.setPadding(new Insets(14));
-        streakBox.setStyle("""
-            -fx-background-color: #fde7c3;
-            -fx-background-radius: 14;
-        """);
-
-        HBox wrapper = new HBox(14, todayBox, streakBox);
-        wrapper.setAlignment(Pos.CENTER);
-
-        return new VBox(wrapper);
-    }
-
-    // ===== ANIMATE PROGRESS (HALUS) =====
-    private void animateProgress(ProgressIndicator indicator, double target) {
-        Timeline tl = new Timeline(
-                new KeyFrame(Duration.ZERO,
-                        new KeyValue(indicator.progressProperty(), 0)),
-                new KeyFrame(Duration.millis(600),
-                        new KeyValue(indicator.progressProperty(), target, Interpolator.EASE_BOTH))
-        );
-        tl.play();
-    }
-
-    // ======================================================
-    // === CARD DENGAN ANIMASI (HOVER)
-    // ======================================================
-    private VBox createCard(String titleText, String valueText) {
-
-        Label title = new Label(titleText);
-        Label value = new Label(valueText);
-        value.setStyle("-fx-font-weight: bold;");
-
-        VBox card = new VBox(6, title, value);
-        card.setAlignment(Pos.CENTER);
-        card.setPadding(new Insets(16));
-        card.setPrefWidth(110);
-
-        card.setStyle("""
-            -fx-background-color: #d9c7a3;
-            -fx-background-radius: 14;
-        """);
-
-        DropShadow shadow = new DropShadow(10, Color.rgb(0,0,0,0.15));
-
-        card.setOnMouseEntered(e -> {
-            TranslateTransition up =
-                    new TranslateTransition(Duration.millis(150), card);
-            up.setToY(-6);
-            card.setEffect(shadow);
-            up.play();
+        cb.setOnAction(e -> {
+            hadirCount += cb.isSelected() ? 1 : -1;
+            updateProgress();
         });
 
-        card.setOnMouseExited(e -> {
-            TranslateTransition down =
-                    new TranslateTransition(Duration.millis(150), card);
-            down.setToY(0);
-            card.setEffect(null);
-            down.play();
-        });
+        return box;
+    }
 
-        return card;
+    private void updateProgress() {
+
+        progress.setProgress((double) hadirCount / totalMatkul);
+        info.setText(hadirCount + " dari " + totalMatkul + " mata kuliah hadir");
+
+        if (hadirCount == totalMatkul && !streakDicatat) {
+            streak++;
+            streakLabel.setText("🔥 " + streak + " Hari");
+            streakDicatat = true;
+
+            ScaleTransition pop = new ScaleTransition(Duration.millis(200), streakLabel);
+            pop.setFromX(0.9);
+            pop.setFromY(0.9);
+            pop.setToX(1);
+            pop.setToY(1);
+            pop.play();
+        }
+
+        if (hadirCount < totalMatkul) {
+            streakDicatat = false;
+        }
     }
 
     public Parent getView() {

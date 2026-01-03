@@ -17,56 +17,52 @@ public class LoginView {
 
     private void buildUI() {
 
-        Label title = new Label("Login");
-        title.setStyle("-fx-font-size: 26px; -fx-font-weight: bold;");
+        Label title = new Label("EightPlanner");
+        title.setStyle("""
+            -fx-font-size: 28px;
+            -fx-font-weight: bold;
+            -fx-text-fill: #2F80ED;
+        """);
 
-        TextField emailField = new TextField();
-        emailField.setPromptText("Email");
-        styleField(emailField);
+        TextField username = new TextField();
+        username.setPromptText("Username");
+        styleField(username);
 
-        PasswordField passwordField = new PasswordField();
-        passwordField.setPromptText("Password");
-        styleField(passwordField);
+        PasswordField password = new PasswordField();
+        password.setPromptText("Password");
+        styleField(password);
 
         Button loginBtn = new Button("Login");
         loginBtn.setPrefWidth(260);
         loginBtn.setStyle("""
-            -fx-background-color: #cbb892;
+            -fx-background-color: #2F80ED;
+            -fx-text-fill: white;
             -fx-font-size: 16px;
             -fx-background-radius: 10;
         """);
 
-        // 🔥 NAVIGASI BARU (DUOLINGO STYLE)
-        loginBtn.setOnAction(e -> {
-            SceneManager.show(
-                new DashboardView().getView(),
-                SceneManager.Anim.SLIDE_LEFT
-            );
-        });
+        loginBtn.setOnAction(e ->
+                SceneManager.show(
+                        new DashboardView().getView(),
+                        SceneManager.Anim.FADE
+                )
+        );
 
-        VBox card = new VBox(15, title, emailField, passwordField, loginBtn);
-        card.setAlignment(Pos.CENTER);
-        card.setPadding(new Insets(30));
-        card.setStyle("""
-            -fx-background-color: #fde7c3;
-            -fx-background-radius: 18;
-        """);
-
-        root = new VBox(card);
+        root = new VBox(18, title, username, password, loginBtn);
         root.setAlignment(Pos.CENTER);
-        root.setStyle("-fx-background-color: #fde7c3;");
+        root.setPadding(new Insets(30));
+        root.setStyle("-fx-background-color: white;");
     }
 
     private void styleField(TextField field) {
         field.setPrefWidth(260);
         field.setStyle("""
             -fx-background-radius: 10;
-            -fx-background-color: #d9c7a3;
+            -fx-border-color: #E0E0E0;
             -fx-padding: 10;
         """);
     }
 
-    // ✅ INI YANG DIPANGGIL SceneManager
     public Parent getView() {
         return root;
     }

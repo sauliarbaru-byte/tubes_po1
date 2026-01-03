@@ -1,41 +1,41 @@
 package service;
 
 import model.Absensi;
-import storage.AbsensiStorage;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AbsensiService {
 
-    public int totalHadir() {
+    private static AbsensiService instance;
+    private final List<Absensi> daftarAbsensi = new ArrayList<>();
+
+    private AbsensiService() {
+        // dummy data (hari ini)
+        daftarAbsensi.add(new Absensi("Pemrograman Objek", "08.00"));
+        daftarAbsensi.add(new Absensi("Basis Data", "10.00"));
+        daftarAbsensi.add(new Absensi("Jaringan Komputer", "13.00"));
+    }
+
+    public static AbsensiService getInstance() {
+        if (instance == null) {
+            instance = new AbsensiService();
+        }
+        return instance;
+    }
+
+    public List<Absensi> getAbsensiHariIni() {
+        return daftarAbsensi;
+    }
+
+    public int getTotal() {
+        return daftarAbsensi.size();
+    }
+
+    public int getJumlahHadir() {
         int count = 0;
-        for (Absensi a : AbsensiStorage.getSemua()) {
+        for (Absensi a : daftarAbsensi) {
             if (a.isHadir()) count++;
         }
         return count;
-    }
-
-    public int totalTidakHadir() {
-        int count = 0;
-        for (Absensi a : AbsensiStorage.getSemua()) {
-            if (!a.isHadir()) count++;
-        }
-        return count;
-    }
-
-    public double persentaseKehadiran() {
-        int total = AbsensiStorage.getSemua().size();
-        if (total == 0) return 0;
-        return (totalHadir() * 100.0) / total;
-    }
-
-    public int hitungStreak() {
-        int streak = 0;
-        for (int i = AbsensiStorage.getSemua().size() - 1; i >= 0; i--) {
-            if (AbsensiStorage.getSemua().get(i).isHadir()) {
-                streak++;
-            } else {
-                break;
-            }
-        }
-        return streak;
     }
 }

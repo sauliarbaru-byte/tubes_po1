@@ -1,22 +1,30 @@
 package model;
 
-import java.time.LocalDate;
-
 public class Absensi {
 
-    private LocalDate tanggal;
+    private String mataKuliah;
+    private String jam;
     private boolean hadir;
 
-    public Absensi(LocalDate tanggal, boolean hadir) {
-        this.tanggal = tanggal;
-        this.hadir = hadir;
+    public Absensi(String mataKuliah, String jam) {
+        this.mataKuliah = mataKuliah;
+        this.jam = jam;
+        this.hadir = false;
     }
 
-    public LocalDate getTanggal() {
-        return tanggal;
+    public String getMataKuliah() {
+        return mataKuliah;
+    }
+
+    public String getJam() {
+        return jam;
     }
 
     public boolean isHadir() {
         return hadir;
+    }
+
+    public void toggleHadir() {
+        this.hadir = !this.hadir;
     }
 }

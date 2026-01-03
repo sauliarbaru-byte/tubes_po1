@@ -1,23 +1,15 @@
 package view;
 
-import javafx.animation.Interpolator;
-import javafx.animation.ScaleTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.util.Duration;
-import model.Tugas;
-import service.TugasService;
-import storage.TugasStorage;
 import util.SceneManager;
 
 public class TasksView {
 
     private BorderPane root;
-    private final TugasService service = new TugasService();
 
     public TasksView() {
         buildUI();
@@ -25,69 +17,90 @@ public class TasksView {
 
     private void buildUI() {
 
-        // ===== HEADER =====
-        Button backBtn = new Button("←");
-        backBtn.setOnAction(e ->
-                SceneManager.show(
-                        new DashboardView().getView(),
-                        SceneManager.Anim.SLIDE_RIGHT
+        // ================= NAVBAR ATAS =================
+        HBox navBar = new HBox(30,
+                navItem("🏠 Dashboard", () ->
+                        SceneManager.show(
+                                new DashboardView().getView(),
+                                SceneManager.Anim.SLIDE_RIGHT
+                        )
+                ),
+                navItem("📋 Tasks", null),
+                navItem("👤 Profile", () ->
+                        SceneManager.show(
+                                new ProfileView().getView(),
+                                SceneManager.Anim.SLIDE_LEFT
+                        )
                 )
         );
+        navBar.setAlignment(Pos.CENTER_RIGHT);
+        navBar.setPadding(new Insets(14));
+        navBar.setStyle("-fx-background-color:#2F8F83;");
 
-        Label title = new Label("Tasks");
-        title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+        Label title = new Label("EightPlanner");
+        title.setStyle("-fx-text-fill:white;-fx-font-size:16px;-fx-font-weight:bold;");
 
-        HBox header = new HBox(10, backBtn, title);
-        header.setAlignment(Pos.CENTER_LEFT);
-        header.setPadding(new Insets(20));
+        BorderPane top = new BorderPane();
+        top.setLeft(title);
+        top.setRight(navBar);
+        top.setPadding(new Insets(0,20,0,20));
+        top.setStyle("-fx-background-color:#2F8F83;");
 
-        // ===== TASK LIST =====
-        VBox list = new VBox(12);
-        list.setPadding(new Insets(20));
-
-        for (Tugas t : TugasStorage.getSemua()) {
-            list.getChildren().add(createTaskItem(t));
-        }
+        // ================= TASK LIST =================
+        VBox tasks = new VBox(14,
+                taskItem("Kerjakan Laporan Basis Data", "Deadline: 20 Okt"),
+                taskItem("Presentasi PBO", "Deadline: 22 Okt"),
+                taskItem("Resume Jaringan Komputer", "Deadline: 25 Okt")
+        );
+        tasks.setPadding(new Insets(20));
 
         root = new BorderPane();
-        root.setTop(header);
-        root.setCenter(list);
+        root.setTop(top);
+        root.setCenter(tasks);
     }
 
-    // ===== CHECKLIST ITEM =====
-    private HBox createTaskItem(Tugas tugas) {
+    private HBox taskItem(String title, String subtitle) {
 
-        Label checkbox = new Label(tugas.isSelesai() ? "☑" : "☐");
-        Label nama = new Label(tugas.getNama());
-        Label status = new Label(new TugasService().getStatus(tugas));
+        Label check = new Label("☐");
+        check.setStyle("-fx-font-size:16px;");
 
-        VBox info = new VBox(2, nama, status);
+        Label t = new Label(title);
+        t.setStyle("-fx-font-weight:bold;");
 
-        HBox box = new HBox(12, checkbox, info);
-        box.setAlignment(Pos.CENTER_LEFT);
-        box.setPadding(new Insets(12));
+        Label sub = new Label(subtitle);
+        sub.setStyle("-fx-text-fill:#666;");
+
+        VBox info = new VBox(4, t, sub);
+
+        HBox box = new HBox(12, check, info);
+        box.setPadding(new Insets(14));
         box.setStyle("""
-            -fx-background-color: #d9c7a3;
-            -fx-background-radius: 10;
+            -fx-background-color:white;
+            -fx-background-radius:14;
+            -fx-border-color:#EEE;
         """);
 
-        box.setOnMouseClicked(e -> {
-            tugas.toggleSelesai();
-            checkbox.setText(tugas.isSelesai() ? "☑" : "☐");
-            playPop(box);
-        });
+        box.setOnMouseClicked(e ->
+                check.setText(check.getText().equals("☐") ? "☑" : "☐")
+        );
+
+        box.setOnMouseEntered(e ->
+                box.setStyle(box.getStyle() + "-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.15),10,0,0,5);")
+        );
+        box.setOnMouseExited(e ->
+                box.setStyle(box.getStyle().replaceAll("-fx-effect:.*?;", ""))
+        );
 
         return box;
     }
 
-    private void playPop(Region node) {
-        ScaleTransition pop = new ScaleTransition(Duration.millis(140), node);
-        pop.setFromX(0.96);
-        pop.setFromY(0.96);
-        pop.setToX(1);
-        pop.setToY(1);
-        pop.setInterpolator(Interpolator.EASE_OUT);
-        pop.play();
+    private Label navItem(String text, Runnable action) {
+        Label l = new Label(text);
+        l.setStyle("-fx-text-fill:white;-fx-font-weight:bold;");
+        if (action != null) {
+            l.setOnMouseClicked(e -> action.run());
+        }
+        return l;
     }
 
     public Parent getView() {

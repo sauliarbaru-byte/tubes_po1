@@ -3,7 +3,6 @@ package view;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import util.SceneManager;
@@ -11,10 +10,6 @@ import util.SceneManager;
 public class ProfileView {
 
     private BorderPane root;
-    private StackPane content;
-
-    // === TAMBAHAN: simpan menu aktif ===
-    private Button activeBtn;
 
     public ProfileView() {
         buildUI();
@@ -22,125 +17,68 @@ public class ProfileView {
 
     private void buildUI() {
 
-        // ===== HEADER =====
-        Button backBtn = new Button("←");
-        backBtn.setOnAction(e ->
-                SceneManager.show(
-                        new DashboardView().getView(),
-                        SceneManager.Anim.SLIDE_RIGHT
+        // ===== NAVBAR (SAMA PERSIS SEMUA VIEW) =====
+        TopNavbar navbar = new TopNavbar("profile");
+
+        // ===== HEADER USER =====
+        Label name = new Label("UJANG RONDA");
+        name.setStyle("-fx-font-size:16px;-fx-font-weight:bold;");
+
+        Label nim = new Label("2250081376");
+        nim.setStyle("-fx-text-fill:#666;");
+
+        VBox header = new VBox(6, name, nim);
+        header.setAlignment(Pos.CENTER);
+        header.setPadding(new Insets(24));
+
+        // ===== MENU =====
+        VBox menu = new VBox(14,
+                item("👨‍🎓 Biografi", () -> BiografiFormView.show()),
+                item("🎓 Akademik", () -> AkademikFormView.show()),
+                item("🏫 Asal Sekolah", () -> AsalSekolahFormView.show()),
+                item("🚪 Logout", () ->
+                        SceneManager.show(new LoginView().getView(), SceneManager.Anim.FADE)
                 )
         );
+        menu.setPadding(new Insets(24));
 
-        Label title = new Label("Profile");
-        title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+        VBox content = new VBox(header, menu);
+        content.setMaxWidth(900);          // 🔥 PENTING
+        content.setAlignment(Pos.TOP_CENTER);
 
-        HBox header = new HBox(10, backBtn, title);
-        header.setPadding(new Insets(20));
-        header.setAlignment(Pos.CENTER_LEFT);
+        // ===== WRAPPER BIAR TENGAH & KONSISTEN =====
+        StackPane centerWrapper = new StackPane(content);
+        centerWrapper.setPadding(new Insets(24));
+        centerWrapper.setAlignment(Pos.TOP_CENTER);
 
-        // ===== SIDE MENU =====
-        Button bioBtn = new Button("Biografi");
-        Button akadBtn = new Button("Akademik");
-        Button asalBtn = new Button("Asal Sekolah");
-
-        // === TAMBAHAN: styling awal menu ===
-        for (Button b : new Button[]{bioBtn, akadBtn, asalBtn}) {
-            b.setMaxWidth(Double.MAX_VALUE);
-            b.setStyle("""
-                -fx-background-color: transparent;
-                -fx-text-fill: #444;
-                -fx-background-radius: 10;
-                -fx-padding: 10 14;
-            """);
-        }
-
-        VBox menu = new VBox(10, bioBtn, akadBtn, asalBtn);
-        menu.setPadding(new Insets(20));
-        menu.setPrefWidth(150);
-
-        // ===== CONTENT =====
-        content = new StackPane();
-        content.setPadding(new Insets(20));
-
-        // default view
-        content.getChildren().add(new BiografiView().getView());
-        setActive(bioBtn); // === TAMBAHAN: default aktif ===
-
-        // ===== MENU ACTION =====
-        bioBtn.setOnAction(e -> {
-            setActive(bioBtn);
-            switchContent(new BiografiView().getView());
-        });
-
-        akadBtn.setOnAction(e -> {
-            setActive(akadBtn);
-            switchContent(new AkademikView().getView());
-        });
-
-        asalBtn.setOnAction(e -> {
-            setActive(asalBtn);
-            switchContent(new AsalSekolahView().getView());
-        });
-
+        // ===== ROOT =====
         root = new BorderPane();
-        root.setTop(header);
-        root.setLeft(menu);
-        root.setCenter(content);
+        root.setTop(navbar);
+        root.setCenter(centerWrapper);
     }
 
-    // === TAMBAHAN: menu aktif ===
-    private void setActive(Button btn) {
-        if (activeBtn != null) {
-            activeBtn.setStyle("""
-                -fx-background-color: transparent;
-                -fx-font-weight: normal;
-                -fx-text-fill: #444;
-            """);
-        }
+    private HBox item(String text, Runnable action) {
 
-        btn.setStyle("""
-            -fx-background-color: #d9c7a3;
-            -fx-font-weight: bold;
-            -fx-text-fill: #000;
-            -fx-background-radius: 10;
+        Label l = new Label(text);
+        l.setStyle("-fx-font-weight:bold;");
+
+        Label arrow = new Label("›");
+        arrow.setStyle("-fx-text-fill:#999;");
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        HBox box = new HBox(l, spacer, arrow);
+        box.setPadding(new Insets(16));
+        box.setAlignment(Pos.CENTER_LEFT);
+        box.setStyle("""
+            -fx-background-color: white;
+            -fx-background-radius: 14;
+            -fx-border-color: #EEE;
         """);
 
-        activeBtn = btn;
-    }
-
-    // ===== NESTED TRANSITION (UPGRADE) =====
-    private void switchContent(Parent view) {
-        if (content.getChildren().isEmpty()) {
-            content.getChildren().add(view);
-            return;
-        }
-
-        Parent current = (Parent) content.getChildren().get(0);
-        content.getChildren().add(view);
-
-        view.setOpacity(0);
-        view.setTranslateX(20);
-
-        javafx.animation.FadeTransition fadeIn =
-                new javafx.animation.FadeTransition(
-                        javafx.util.Duration.millis(220), view);
-        fadeIn.setToValue(1);
-
-        javafx.animation.TranslateTransition slideIn =
-                new javafx.animation.TranslateTransition(
-                        javafx.util.Duration.millis(220), view);
-        slideIn.setToX(0);
-
-        javafx.animation.FadeTransition fadeOut =
-                new javafx.animation.FadeTransition(
-                        javafx.util.Duration.millis(180), current);
-        fadeOut.setToValue(0);
-
-        fadeOut.setOnFinished(e ->
-                content.getChildren().remove(current));
-
-        new javafx.animation.ParallelTransition(fadeIn, slideIn).play();
-        fadeOut.play();
+        box.setOnMouseClicked(e -> action.run());
+        return box;
     }
 
     public Parent getView() {
