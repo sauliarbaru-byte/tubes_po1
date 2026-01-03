@@ -1,7 +1,5 @@
 package view;
 
-public package view;
-
 import controller.NilaiController;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,7 +10,6 @@ public class NilaiView {
     private Scene scene;
 
     public NilaiView() {
-
         NilaiController controller = new NilaiController();
 
         Button lihat = new Button("Lihat IPK");
@@ -25,7 +22,4 @@ public class NilaiView {
     public Scene getScene() {
         return scene;
     }
-}
- {
-    
 }

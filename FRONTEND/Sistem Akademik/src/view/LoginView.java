@@ -2,16 +2,20 @@ package view;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
+import util.SceneManager;
 
 public class LoginView {
 
-    private Scene scene;
+    private VBox root;
 
-    public LoginView(Stage stage) {
+    public LoginView() {
+        buildUI();
+    }
+
+    private void buildUI() {
 
         Label title = new Label("Login");
         title.setStyle("-fx-font-size: 26px; -fx-font-weight: bold;");
@@ -32,9 +36,12 @@ public class LoginView {
             -fx-background-radius: 10;
         """);
 
+        // 🔥 NAVIGASI BARU (DUOLINGO STYLE)
         loginBtn.setOnAction(e -> {
-            DashboardView dashboard = new DashboardView(stage);
-            stage.setScene(dashboard.getScene());
+            SceneManager.show(
+                new DashboardView().getView(),
+                SceneManager.Anim.SLIDE_LEFT
+            );
         });
 
         VBox card = new VBox(15, title, emailField, passwordField, loginBtn);
@@ -45,7 +52,9 @@ public class LoginView {
             -fx-background-radius: 18;
         """);
 
-        scene = new Scene(new StackPane(card), 450, 650);
+        root = new VBox(card);
+        root.setAlignment(Pos.CENTER);
+        root.setStyle("-fx-background-color: #fde7c3;");
     }
 
     private void styleField(TextField field) {
@@ -57,7 +66,8 @@ public class LoginView {
         """);
     }
 
-    public Scene getScene() {
-        return scene;
+    // ✅ INI YANG DIPANGGIL SceneManager
+    public Parent getView() {
+        return root;
     }
 }

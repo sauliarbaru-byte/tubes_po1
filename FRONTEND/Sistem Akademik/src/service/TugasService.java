@@ -58,4 +58,21 @@ public class TugasService {
             return "Aman ✅";
         }
     }
+
+        // ================= PROGRESS =================
+
+    public int getTotalTugas() {
+        return TugasStorage.getSemua().size();
+    }
+
+    public int getJumlahSelesai() {
+        int count = 0;
+        for (Tugas t : TugasStorage.getSemua()) {
+            if (t.isSelesai()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
 }

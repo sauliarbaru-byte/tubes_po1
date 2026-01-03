@@ -7,6 +7,9 @@ public class Tugas {
     private String mataKuliah;
     private LocalDate deadline;
 
+    // ===== TAMBAHAN =====
+    private boolean selesai = false;
+
     public Tugas(String nama, String mataKuliah, LocalDate deadline) {
         this.nama = nama;
         this.mataKuliah = mataKuliah;
@@ -23,5 +26,14 @@ public class Tugas {
 
     public LocalDate getDeadline() {
         return deadline;
+    }
+
+    // ===== TAMBAHAN =====
+    public boolean isSelesai() {
+        return selesai;
+    }
+
+    public void toggleSelesai() {
+        this.selesai = !this.selesai;
     }
 }

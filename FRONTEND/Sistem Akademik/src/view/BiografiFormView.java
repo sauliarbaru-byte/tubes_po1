@@ -1,22 +1,28 @@
 package view;
 
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
+import util.SceneManager;
 
 public class BiografiFormView {
 
-    private Scene scene;
+    private VBox root;
 
-    public BiografiFormView(Stage stage) {
+    public BiografiFormView() {
 
-        VBox root = new VBox(12);
+        root = new VBox(12);
         root.setPadding(new Insets(20));
         root.setStyle("-fx-background-color: #fde7c3;");
 
         Button back = new Button("<-- Biografi");
+        back.setOnAction(e ->
+                SceneManager.show(
+                        new ProfileView().getView(),
+                        SceneManager.Anim.SLIDE_RIGHT
+                )
+        );
 
         TextField nim = field("NIM");
         TextField nama = field("Nama");
@@ -34,22 +40,22 @@ public class BiografiFormView {
 
         Button simpan = new Button("💾 Simpan");
 
-        // 👉 PENTING: PINDAH KE SCENE BARU
+        // ===== SIMPAN & PINDAH VIEW =====
         simpan.setOnAction(e -> {
             String gender =
                     laki.isSelected() ? "Laki-laki" :
                     perempuan.isSelected() ? "Perempuan" : "-";
 
-            stage.setScene(
+            SceneManager.show(
                     new BiografiResultView(
-                            stage,
                             nim.getText(),
                             nama.getText(),
                             alamat.getText(),
                             tgl.getText(),
                             gender,
                             telp.getText()
-                    ).getScene()
+                    ).getView(),
+                    SceneManager.Anim.SLIDE_LEFT
             );
         });
 
@@ -63,8 +69,6 @@ public class BiografiFormView {
                 telp,
                 simpan
         );
-
-        scene = new Scene(root, 450, 650);
     }
 
     private TextField field(String hint) {
@@ -77,7 +81,7 @@ public class BiografiFormView {
         return tf;
     }
 
-    public Scene getScene() {
-        return scene;
+    public Parent getView() {
+        return root;
     }
 }

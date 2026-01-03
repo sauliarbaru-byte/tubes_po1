@@ -5,15 +5,14 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
-public class BiografiView {
+public class AsalSekolahView {
 
     private VBox root;
 
-    public BiografiView() {
+    public AsalSekolahView() {
         root = new VBox(10,
-                new Label("Nama : ..."),
-                new Label("NIM : ..."),
-                new Label("Tanggal Lahir : ...")
+                new Label("Sekolah Asal : ..."),
+                new Label("Tahun Lulus : ...")
         );
         root.setPadding(new Insets(20));
     }

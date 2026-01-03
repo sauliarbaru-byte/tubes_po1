@@ -1,7 +1,5 @@
 package view;
 
-public package view;
-
 import controller.JadwalController;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
@@ -25,7 +23,4 @@ public class JadwalView {
     public Scene getScene() {
         return scene;
     }
-}
- {
-    
 }

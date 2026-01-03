@@ -1,17 +1,17 @@
 package view;
 
-import javafx.geometry.*;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.stage.Stage;
+import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import util.SceneManager;
 
 public class BiografiResultView {
 
-    private Scene scene;
+    private VBox root;
 
     public BiografiResultView(
-            Stage stage,
             String nim,
             String nama,
             String alamat,
@@ -21,7 +21,10 @@ public class BiografiResultView {
 
         Button back = new Button("<-- Data Akun");
         back.setOnAction(e ->
-            stage.setScene(new ProfileView(stage).getScene())
+                SceneManager.show(
+                        new ProfileView().getView(),
+                        SceneManager.Anim.SLIDE_RIGHT
+                )
         );
 
         VBox card = new VBox(8,
@@ -39,18 +42,16 @@ public class BiografiResultView {
             -fx-background-radius: 12;
         """);
 
-        VBox root = new VBox(20, back, card);
+        root = new VBox(20, back, card);
         root.setPadding(new Insets(20));
         root.setStyle("-fx-background-color: #fde7c3;");
-
-        scene = new Scene(root, 450, 650);
     }
 
     private Label label(String text) {
         return new Label(text);
     }
 
-    public Scene getScene() {
-        return scene;
+    public Parent getView() {
+        return root;
     }
 }
